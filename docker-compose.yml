@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  courses-service:
+    build: .
+    container_name: courses-service-ngrok
+    ports:
+      - "4000:4000"  # Puerto de la aplicación
+      - "4040:4040"  # Puerto del dashboard de ngrok
+    environment:
+      - NODE_ENV=development
+      - PORT=4000
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+      - NGROK_AUTHTOKEN=2yCkzXYJ4gcUW5JSxmcJ31YrCV7_ntXUX5XzMjZUUKV2JACC
+    volumes:
+      - .:/app
+      - /app/node_modules
+    networks:
+      - courses-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  courses-network:
+    driver: bridge
