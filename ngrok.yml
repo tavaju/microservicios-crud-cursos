@@ -1,0 +1,7 @@
+version: "2"
+authtoken: 2yCkzXYJ4gcUW5JSxmcJ31YrCV7_ntXUX5XzMjZUUKV2JACC
+tunnels:
+  web:
+    proto: http
+    addr: 4000
+    hostname: true-urgently-horse.ngrok-free.app
