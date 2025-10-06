@@ -7,13 +7,11 @@ services:
     ports:
       - "4000:4000"  # Puerto de la aplicación
       - "4040:4040"  # Puerto del dashboard de ngrok
+    env_file:
+      - .env.docker
     environment:
       - NODE_ENV=development
       - PORT=4000
-      - SUPABASE_URL=${SUPABASE_URL}
-      - SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
-      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
-      - NGROK_AUTHTOKEN=2yCkzXYJ4gcUW5JSxmcJ31YrCV7_ntXUX5XzMjZUUKV2JACC
     volumes:
       - .:/app
       - /app/node_modules
