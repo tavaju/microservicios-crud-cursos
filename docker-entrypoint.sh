@@ -20,6 +20,16 @@ check_supabase_connection() {
 # Función para iniciar ngrok
 start_ngrok() {
     echo "🚀 Iniciando ngrok en puerto 4000 con dominio específico..."
+    
+    # Verificar que NGROK_AUTHTOKEN esté configurado
+    if [ -z "$NGROK_AUTHTOKEN" ]; then
+        echo "❌ Error: NGROK_AUTHTOKEN no está configurado"
+        echo "💡 Asegúrate de configurar NGROK_AUTHTOKEN en tu archivo .env.docker"
+        return 1
+    fi
+    
+    # Configurar ngrok con el token
+    ngrok config add-authtoken $NGROK_AUTHTOKEN
     ngrok http 4000 --url=true-urgently-horse.ngrok-free.app --log=stdout &
     NGROK_PID=$!
     
@@ -54,6 +64,25 @@ cleanup() {
 trap cleanup SIGTERM SIGINT
 
 echo "🚀 Iniciando Courses Service..."
+
+# Función para matar procesos en puerto 4000 (solo en contenedor)
+kill_port_4000() {
+    echo "🔪 Matando procesos existentes en puerto 4000 (contenedor)..."
+    
+    # Buscar y matar procesos que usen el puerto 4000 en el contenedor
+    PIDS=$(lsof -ti:4000 2>/dev/null)
+    if [ ! -z "$PIDS" ]; then
+        echo "📋 Procesos encontrados en contenedor (puerto 4000): $PIDS"
+        echo "$PIDS" | xargs kill -9 2>/dev/null
+        sleep 2
+        echo "✅ Procesos en puerto 4000 eliminados"
+    else
+        echo "✅ No hay procesos usando el puerto 4000 en el contenedor"
+    fi
+}
+
+# Paso 0: Matar procesos existentes en puerto 4000
+kill_port_4000
 
 # Paso 1: Iniciar la aplicación NestJS
 echo "📦 Iniciando aplicación NestJS..."
