@@ -1,58 +1,54 @@
-import { IsString, IsNumber, IsOptional, IsBoolean, Min, MaxLength } from 'class-validator';
+import { IsString, IsNumber, IsOptional, IsBoolean, Min, MaxLength, IsUUID, IsEnum } from 'class-validator';
 
-export class CreateCursoDto {
+export class CreateCourseDto {
   @IsString()
   @MaxLength(255)
-  nombre: string;
+  title: string;
 
   @IsOptional()
   @IsString()
-  descripcion?: string;
-
-  @IsNumber()
-  @Min(0)
-  precio: number;
-
-  @IsNumber()
-  @Min(0)
-  duracion_horas: number;
+  description?: string;
 
   @IsOptional()
-  @IsString()
-  @MaxLength(100)
-  categoria?: string;
+  @IsNumber()
+  @Min(0)
+  price?: number;
 
   @IsOptional()
   @IsBoolean()
-  activo?: boolean;
+  is_active?: boolean;
 }
 
-export class UpdateCursoDto {
+export class UpdateCourseDto {
   @IsOptional()
   @IsString()
   @MaxLength(255)
-  nombre?: string;
+  title?: string;
 
   @IsOptional()
   @IsString()
-  descripcion?: string;
+  description?: string;
 
   @IsOptional()
   @IsNumber()
   @Min(0)
-  precio?: number;
-
-  @IsOptional()
-  @IsNumber()
-  @Min(0)
-  duracion_horas?: number;
-
-  @IsOptional()
-  @IsString()
-  @MaxLength(100)
-  categoria?: string;
+  price?: number;
 
   @IsOptional()
   @IsBoolean()
-  activo?: boolean;
+  is_active?: boolean;
+}
+
+export class CreateEnrollmentDto {
+  @IsUUID()
+  studentId: string;
+
+  @IsUUID()
+  courseId: string;
+}
+
+export class UpdateEnrollmentDto {
+  @IsOptional()
+  @IsEnum(['active', 'cancelled'])
+  status?: 'active' | 'cancelled';
 }

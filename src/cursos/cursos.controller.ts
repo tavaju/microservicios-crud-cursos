@@ -1,67 +1,65 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiQuery } from '@nestjs/swagger';
-import { CursosService } from './cursos.service';
-import { CreateCursoDto, UpdateCursoDto } from '../common/dto/curso.dto';
-import { Curso } from '../common/entities/curso.entity';
+import { CoursesService } from './cursos.service';
+import { CreateCourseDto, UpdateCourseDto } from '../common/dto/curso.dto';
+import { Course } from '../common/entities/curso.entity';
 
-@ApiTags('cursos')
-@Controller('cursos')
-export class CursosController {
-  constructor(private readonly cursosService: CursosService) {}
+@ApiTags('courses')
+@Controller('courses')
+export class CoursesController {
+  constructor(private readonly coursesService: CoursesService) {}
 
   @Post()
-  @ApiOperation({ summary: 'Crear un nuevo curso' })
-  @ApiResponse({ status: 201, description: 'Curso creado exitosamente', type: Curso })
-  @ApiResponse({ status: 400, description: 'Datos de entrada inválidos' })
-  create(@Body() createCursoDto: CreateCursoDto): Promise<Curso> {
-    return this.cursosService.create(createCursoDto);
+  @ApiOperation({ summary: 'Create a new course' })
+  @ApiResponse({ status: 201, description: 'Course created successfully', type: Course })
+  @ApiResponse({ status: 400, description: 'Invalid input data' })
+  create(@Body() createCourseDto: CreateCourseDto): Promise<Course> {
+    return this.coursesService.create(createCourseDto);
   }
 
   @Get()
-  @ApiOperation({ summary: 'Obtener todos los cursos' })
-  @ApiQuery({ name: 'categoria', required: false, description: 'Filtrar por categoría' })
-  @ApiQuery({ name: 'activos', required: false, description: 'Solo cursos activos' })
-  @ApiResponse({ status: 200, description: 'Lista de cursos obtenida exitosamente', type: [Curso] })
-  findAll(
-    @Query('categoria') categoria?: string,
-    @Query('activos') activos?: string,
-  ): Promise<Curso[]> {
-    if (categoria) {
-      return this.cursosService.findByCategoria(categoria);
-    }
-    if (activos === 'true') {
-      return this.cursosService.findActivos();
-    }
-    return this.cursosService.findAll();
+  @ApiOperation({ summary: 'Get all courses' })
+  @ApiQuery({ name: 'isActive', required: false, description: 'Filter by active status' })
+  @ApiResponse({ status: 200, description: 'Courses retrieved successfully', type: [Course] })
+  findAll(@Query('isActive') isActive?: string): Promise<Course[]> {
+    const activeFilter = isActive === 'true' ? true : isActive === 'false' ? false : undefined;
+    return this.coursesService.findAll(activeFilter);
+  }
+
+  @Get('active')
+  @ApiOperation({ summary: 'Get only active courses' })
+  @ApiResponse({ status: 200, description: 'Active courses retrieved successfully', type: [Course] })
+  findActive(): Promise<Course[]> {
+    return this.coursesService.findActive();
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Obtener un curso por ID' })
-  @ApiParam({ name: 'id', description: 'ID del curso' })
-  @ApiResponse({ status: 200, description: 'Curso encontrado', type: Curso })
-  @ApiResponse({ status: 404, description: 'Curso no encontrado' })
-  findOne(@Param('id', ParseIntPipe) id: number): Promise<Curso> {
-    return this.cursosService.findOne(id);
+  @ApiOperation({ summary: 'Get a course by ID' })
+  @ApiParam({ name: 'id', description: 'Course ID' })
+  @ApiResponse({ status: 200, description: 'Course found', type: Course })
+  @ApiResponse({ status: 404, description: 'Course not found' })
+  findOne(@Param('id') id: string): Promise<Course> {
+    return this.coursesService.findOne(id);
   }
 
   @Patch(':id')
-  @ApiOperation({ summary: 'Actualizar un curso' })
-  @ApiParam({ name: 'id', description: 'ID del curso' })
-  @ApiResponse({ status: 200, description: 'Curso actualizado exitosamente', type: Curso })
-  @ApiResponse({ status: 404, description: 'Curso no encontrado' })
+  @ApiOperation({ summary: 'Update a course' })
+  @ApiParam({ name: 'id', description: 'Course ID' })
+  @ApiResponse({ status: 200, description: 'Course updated successfully', type: Course })
+  @ApiResponse({ status: 404, description: 'Course not found' })
   update(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() updateCursoDto: UpdateCursoDto,
-  ): Promise<Curso> {
-    return this.cursosService.update(id, updateCursoDto);
+    @Param('id') id: string,
+    @Body() updateCourseDto: UpdateCourseDto,
+  ): Promise<Course> {
+    return this.coursesService.update(id, updateCourseDto);
   }
 
   @Delete(':id')
-  @ApiOperation({ summary: 'Eliminar un curso' })
-  @ApiParam({ name: 'id', description: 'ID del curso' })
-  @ApiResponse({ status: 200, description: 'Curso eliminado exitosamente' })
-  @ApiResponse({ status: 404, description: 'Curso no encontrado' })
-  remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
-    return this.cursosService.remove(id);
+  @ApiOperation({ summary: 'Delete a course' })
+  @ApiParam({ name: 'id', description: 'Course ID' })
+  @ApiResponse({ status: 200, description: 'Course deleted successfully' })
+  @ApiResponse({ status: 404, description: 'Course not found' })
+  remove(@Param('id') id: string): Promise<void> {
+    return this.coursesService.remove(id);
   }
 }

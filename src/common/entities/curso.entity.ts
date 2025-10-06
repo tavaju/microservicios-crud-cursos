@@ -1,31 +1,41 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { ApiProperty } from '@nestjs/swagger';
 
-@Entity('cursos')
-export class Curso {
-  @PrimaryGeneratedColumn()
-  id: number;
+export class Course {
+  @ApiProperty({ description: 'Course ID', example: '123e4567-e89b-12d3-a456-426614174000' })
+  id: string;
 
-  @Column({ type: 'varchar', length: 255 })
-  nombre: string;
+  @ApiProperty({ description: 'Course title', example: 'Introduction to Programming' })
+  title: string;
 
-  @Column({ type: 'text', nullable: true })
-  descripcion: string;
+  @ApiProperty({ description: 'Course description', example: 'Learn the basics of programming', required: false })
+  description?: string;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
-  precio: number;
+  @ApiProperty({ description: 'Course price', example: 99.99 })
+  price: number;
 
-  @Column({ type: 'int', default: 0 })
-  duracion_horas: number;
+  @ApiProperty({ description: 'Whether the course is active', example: true })
+  is_active: boolean;
 
-  @Column({ type: 'varchar', length: 100, nullable: true })
-  categoria: string;
+  @ApiProperty({ description: 'Creation timestamp' })
+  created_at: string;
 
-  @Column({ type: 'boolean', default: true })
-  activo: boolean;
+  @ApiProperty({ description: 'Last update timestamp' })
+  updated_at: string;
+}
 
-  @CreateDateColumn()
-  created_at: Date;
+export class Enrollment {
+  @ApiProperty({ description: 'Enrollment ID', example: '123e4567-e89b-12d3-a456-426614174000' })
+  id: string;
 
-  @UpdateDateColumn()
-  updated_at: Date;
+  @ApiProperty({ description: 'Student ID', example: '123e4567-e89b-12d3-a456-426614174000' })
+  student_id: string;
+
+  @ApiProperty({ description: 'Course ID', example: '123e4567-e89b-12d3-a456-426614174000' })
+  course_id: string;
+
+  @ApiProperty({ description: 'Enrollment status', enum: ['active', 'cancelled'], example: 'active' })
+  status: 'active' | 'cancelled';
+
+  @ApiProperty({ description: 'Creation timestamp' })
+  created_at: string;
 }
