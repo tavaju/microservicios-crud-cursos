@@ -83,6 +83,7 @@ kill_port_4000() {
 
 # Paso 0: Matar procesos existentes en puerto 4000
 kill_port_4000
+
 # Paso 1: Iniciar la aplicación NestJS
 echo "📦 Iniciando aplicación NestJS..."
 npm run start:dev &
