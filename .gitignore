@@ -19,6 +19,9 @@ lerna-debug.log*
 .env.test
 .env.production
 .env.docker
+
 # temp directory
 .temp
 .tmp
+
+ngrok.yml

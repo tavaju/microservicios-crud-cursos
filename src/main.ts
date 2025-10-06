@@ -1,10 +1,12 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { ConfigService } from '@nestjs/config';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const configService = app.get(ConfigService);
 
   // Configurar validación global
   app.useGlobalPipes(
@@ -16,22 +18,33 @@ async function bootstrap() {
   );
 
   // Configurar CORS
-  app.enableCors();
+  const corsOrigins = configService.get<string>('CORS_ALLOWED_ORIGINS', 'http://localhost:3000');
+  const isDevelopment = configService.get('NODE_ENV') === 'development';
+  
+  app.enableCors({
+    origin: isDevelopment ? true : corsOrigins.split(',').map(origin => origin.trim()),
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
+  });
 
   // Configurar Swagger
   const config = new DocumentBuilder()
-    .setTitle('Microservicio CRUD Cursos')
-    .setDescription('API para gestión de cursos')
+    .setTitle('Courses Service - Microservices CRUD')
+    .setDescription('API para gestión de cursos e inscripciones con Supabase')
     .setVersion('1.0')
-    .addTag('cursos')
+    .addTag('courses', 'Gestión de cursos')
+    .addTag('enrollments', 'Gestión de inscripciones')
+    .addTag('health', 'Health check')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
-  const port = process.env.PORT || 3000;
+  const port = configService.get('PORT', 4000);
   await app.listen(port);
   
-  console.log(`🚀 Aplicación ejecutándose en: http://localhost:${port}`);
+  console.log(`🚀 Courses Service ejecutándose en: http://localhost:${port}`);
   console.log(`📚 Documentación Swagger: http://localhost:${port}/api`);
+  console.log(`🏥 Health Check: http://localhost:${port}/health`);
 }
 bootstrap();
