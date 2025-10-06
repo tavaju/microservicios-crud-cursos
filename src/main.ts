@@ -19,10 +19,13 @@ async function bootstrap() {
 
   // Configurar CORS
   const corsOrigins = configService.get<string>('CORS_ALLOWED_ORIGINS', 'http://localhost:3000');
+  const isDevelopment = configService.get('NODE_ENV') === 'development';
+  
   app.enableCors({
-    origin: corsOrigins.split(',').map(origin => origin.trim()),
+    origin: isDevelopment ? true : corsOrigins.split(',').map(origin => origin.trim()),
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
   });
 
   // Configurar Swagger
