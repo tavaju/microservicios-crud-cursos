@@ -65,7 +65,6 @@ trap cleanup SIGTERM SIGINT
 
 echo "🚀 Iniciando Courses Service..."
 
-<<<<<<< HEAD
 # Función para matar procesos en puerto 4000 (solo en contenedor)
 kill_port_4000() {
     echo "🔪 Matando procesos existentes en puerto 4000 (contenedor)..."
@@ -84,9 +83,6 @@ kill_port_4000() {
 
 # Paso 0: Matar procesos existentes en puerto 4000
 kill_port_4000
-
-=======
->>>>>>> f6498c1 (feat: docker deployment configuration)
 # Paso 1: Iniciar la aplicación NestJS
 echo "📦 Iniciando aplicación NestJS..."
 npm run start:dev &
