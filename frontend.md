@@ -3,9 +3,20 @@
 Este documento describe todos los endpoints disponibles en el microservicio de Cursos para que el frontend engineer pueda desarrollar la interfaz visual correspondiente.
 
 ## Base URL
+
+**⚠️ IMPORTANTE: URL Dinámica**
+
+La URL base del servicio es dinámica y puede cambiar según el entorno:
+
+- **Desarrollo Local:** `http://localhost:3000`
+- **Despliegue con ngrok:** `https://true-urgently-horse.ngrok-free.app`
+
+### Configuración de ngrok
+```bash
+ngrok http --url=true-urgently-horse.ngrok-free.app 4000
 ```
-http://localhost:3000
-```
+
+**Nota:** El frontend debe estar configurado para manejar ambas URLs o tener un sistema de configuración de entorno que permita cambiar la URL base dinámicamente.
 
 ## Endpoints Disponibles
 
